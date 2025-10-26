@@ -8,3 +8,4 @@ Flask-Migrate
 pyodbc
 email-validator
 python-dotenv
+gunicorn
