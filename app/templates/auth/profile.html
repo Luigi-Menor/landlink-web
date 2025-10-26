@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - LandLink{% endblock %}
+
+{% block content %}
+<section class="profile-container">
+    <h1>Mi Perfil</h1>
+    
+    <div class="profile-info">
+        <div class="profile-header">
+            <h2>{{ current_user.get_full_name() }}</h2>
+            <span class="badge">{{ current_user.role.nombre }}</span>
+        </div>
+        
+        <dl class="profile-details">
+            <dt>Correo Electrónico</dt>
+            <dd>{{ current_user.correo_electronico }}</dd>
+            
+            {% if current_user.telefono %}
+                <dt>Teléfono</dt>
+                <dd>{{ current_user.telefono }}</dd>
+            {% endif %}
+            
+            {% if current_user.fecha_nacimiento %}
+                <dt>Fecha de Nacimiento</dt>
+                <dd>{{ current_user.fecha_nacimiento.strftime('%d/%m/%Y') }}</dd>
+            {% endif %}
+            
+            {% if current_user.genero %}
+                <dt>Género</dt>
+                <dd>{{ current_user.genero }}</dd>
+            {% endif %}
+        </dl>
+        
+        <div class="profile-actions">
+            <a href="{{ url_for('auth.change_password') }}" class="btn btn-secondary">Cambiar Contraseña</a>
+            <a href="#" class="btn btn-primary">Editar Perfil</a>
+        </div>
+    </div>
+    
+    {% if current_user.is_volunteer() %}
+        <div class="profile-section">
+            <h3>Mis Inscripciones</h3>
+            
+            {% if current_user.solicitudes.count() > 0 %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solicitud in current_user.solicitudes %}
+                            <tr>
+                                <td>{{ solicitud.evento.nombre }}</td>
+                                <td>{{ solicitud.evento.fecha.strftime('%d/%m/%Y') }}</td>
+                                <td>
+                                    <span class="status-badge {{ solicitud.estado }}">
+                                        {{ solicitud.estado }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm">Ver Detalles</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No tienes inscripciones activas.</p>
+                <a href="{{ url_for('volunteer.events') }}" class="btn btn-primary">Explorar Eventos</a>
+            {% endif %}
+        </div>
+        
+        <div class="profile-section">
+            <h3>Mi Historial de Participación</h3>
+            
+            {% if current_user.historial.count() > 0 %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Fecha</th>
+                            <th>Horas</th>
+                            <th>Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for actividad in current_user.historial %}
+                            <tr>
+                                <td>{{ actividad.evento.nombre }}</td>
+                                <td>{{ actividad.fecha_participacion.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ actividad.horas }}</td>
+                                <td>{{ actividad.rol_evento.nombre if actividad.rol_evento else 'N/A' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No tienes historial de participación.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    {% if current_user.is_organizer() %}
+        <div class="profile-section">
+            <h3>Mis Organizaciones</h3>
+            
+            {% if current_user.organizaciones_usuario %}
+                <div class="card-grid">
+                    {% for organizacion in current_user.organizaciones_usuario %}
+                        <article class="card">
+                            <h4>{{ organizacion.nombre }}</h4>
+                            <p>{{ organizacion.tipo.nombre if organizacion.tipo else 'Sin tipo' }}</p>
+                            <a href="#" class="btn btn-sm">Ver Detalles</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No estás asociado a ninguna organización.</p>
+                <a href="#" class="btn btn-primary">Solicitar Organización</a>
+            {% endif %}
+        </div>
+        
+        <div class="profile-section">
+            <h3>Mis Eventos</h3>
+            
+            {% set eventos = [] %}
+            {% for organizacion in current_user.organizaciones_usuario %}
+                {% for evento in organizacion.eventos %}
+                    {% set eventos = eventos + [evento] %}
+                {% endfor %}
+            {% endfor %}
+            
+            {% if eventos %}
+                <div class="card-grid">
+                    {% for evento in eventos %}
+                        <article class="card">
+                            <h4>{{ evento.nombre }}</h4>
+                            <p>{{ evento.fecha.strftime('%d/%m/%Y') }}</p>
+                            <p>{{ evento.ubicacion }}</p>
+                            <a href="#" class="btn btn-sm">Ver Detalles</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No has creado ningún evento.</p>
+                <a href="{{ url_for('organizer.create_event') }}" class="btn btn-primary">Crear Evento</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

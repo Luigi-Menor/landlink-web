@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}{{ evento.nombre }} - LandLink{% endblock %}
+
+{% block content %}
+<section class="event-detail">
+    <h1>{{ evento.nombre }}</h1>
+    
+    <div class="detail-actions">
+        <a href="{{ url_for('volunteer.events') }}" class="btn btn-secondary">Volver a Eventos</a>
+        
+        {% if solicitud %}
+            {% if solicitud.estado == 'pendiente' %}
+                <span class="status-badge pendiente">Solicitud Pendiente</span>
+                <form method="POST" action="{{ url_for('volunteer.cancelar_inscripcion', event_id=evento.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-danger">Cancelar Inscripción</button>
+                </form>
+            {% elif solicitud.estado == 'aprobado' %}
+                <span class="status-badge aprobado">Inscripción Aprobada</span>
+                {% if evento.fecha > now.date() %}
+                    <form method="POST" action="{{ url_for('volunteer.cancelar_inscripcion', event_id=evento.id) }}" class="inline-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-danger">Cancelar Inscripción</button>
+                    </form>
+                {% endif %}
+            {% elif solicitud.estado == 'rechazado' %}
+                <span class="status-badge rechazado">Solicitud Rechazada</span>
+            {% endif %}
+        {% else %}
+            {% if evento.fecha >= now.date() %}
+                <form method="POST" action="{{ url_for('volunteer.inscribirse_evento', event_id=evento.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-primary">Inscribirse</button>
+                </form>
+            {% else %}
+                <span class="status-badge">Evento Pasado</span>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="event-info">
+        <div class="info-card">
+            <h3>Información General</h3>
+            <dl class="info-list">
+                <dt>Fecha</dt>
+                <dd>{{ evento.fecha.strftime('%d/%m/%Y') }}</dd>
+                
+                <dt>Organización</dt>
+                <dd>{{ evento.organizacion.nombre }}</dd>
+                
+                <dt>Ubicación</dt>
+                <dd>{{ evento.ubicacion }}</dd>
+                
+                {% if evento.localidad %}
+                    <dt>Localidad</dt>
+                    <dd>{{ evento.localidad }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+        
+        <div class="info-card">
+            <h3>Descripción</h3>
+            <p>{{ evento.descripcion or 'Sin descripción' }}</p>
+            
+            {% if evento.areas.count() > 0 %}
+                <h4>Áreas de Intervención</h4>
+                <ul class="tag-list">
+                    {% for area in evento.areas %}
+                        <li class="tag">{{ area.nombre }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if evento.fecha < now.date() %}
+        <div class="comentarios-section">
+            <h3>Comentarios y Calificaciones</h3>
+            
+            {% if comentarios %}
+                <div class="comentarios-list">
+                    {% for comentario in comentarios %}
+                        <div class="comentario-card">
+                            <div class="comentario-header">
+                                <span class="comentario-autor">{{ comentario.usuario.get_full_name() }}</span>
+                                <div class="calificacion">
+                                    {% for i in range(5) %}
+                                        {% if i < comentario.calificacion %}
+                                            <span class="star filled">★</span>
+                                        {% else %}
+                                            <span class="star">☆</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="comentario-fecha">{{ comentario.creado_en.strftime('%d/%m/%Y') }}</span>
+                            </div>
+                            <div class="comentario-body">
+                                <p>{{ comentario.comentario }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No hay comentarios para este evento.</p>
+            {% endif %}
+            
+            {% set mi_comentario = comentarios|selectattr('usuario_id', 'equalto', current_user.id)|first %}
+            {% if solicitud and solicitud.estado == 'aprobado' %}
+                <div class="comentario-form">
+                    <h4>{% if mi_comentario %}Editar mi comentario{% else %}Dejar un comentario{% endif %}</h4>
+                    <form method="POST" action="{{ url_for('volunteer.comentar_evento', event_id=evento.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <div class="form-group">
+                            <label for="calificacion">Calificación (1-5)</label>
+                            <select id="calificacion" name="calificacion" required>
+                                <option value="">Seleccionar</option>
+                                {% for i in range(1, 6) %}
+                                    <option value="{{ i }}" {% if mi_comentario and mi_comentario.calificacion == i %}selected{% endif %}>{{ i }} - {% if i == 1 %}Muy malo{% elif i == 2 %}Malo{% elif i == 3 %}Regular{% elif i == 4 %}Bueno{% else %}Excelente{% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="comentario">Comentario</label>
+                            <textarea id="comentario" name="comentario" rows="4" required>{{ mi_comentario.comentario if mi_comentario else '' }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">{% if mi_comentario %}Actualizar{% else %}Publicar{% endif %}</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

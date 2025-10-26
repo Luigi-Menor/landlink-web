@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}{{ organizacion.nombre }} - LandLink{% endblock %}
+
+{% block content %}
+<div class="organizer-layout">
+    <aside class="organizer-sidebar">
+        <div class="sidebar-header">
+            <h2>Organizador</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('organizer.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('organizer.events') }}"><i class="fas fa-calendar-alt"></i> Mis Eventos</a></li>
+                <li><a href="{{ url_for('organizer.organizations') }}" class="active"><i class="fas fa-building"></i> Organizaciones</a></li>
+                <li><a href="{{ url_for('organizer.create_event') }}"><i class="fas fa-plus-circle"></i> Crear Evento</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="organizer-content">
+        <section class="organization-detail">
+            <div class="section-header">
+                <h1>{{ organizacion.nombre }}</h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('organizer.organizations') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    <a href="{{ url_for('organizer.edit_organization', org_id=organizacion.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <h3>Información General</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Tipo:</span>
+                            <span class="value">{{ organizacion.tipo.nombre if organizacion.tipo else 'Sin tipo' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Localidad:</span>
+                            <span class="value">{{ organizacion.localidad or 'No especificada' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Correo:</span>
+                            <span class="value">{{ organizacion.correo_electronico }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Teléfono:</span>
+                            <span class="value">{{ organizacion.telefono or 'No especificado' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Descripción</h3>
+                    <p class="description">{{ organizacion.descripcion or 'Sin descripción disponible' }}</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Áreas de Trabajo</h3>
+                    <div class="tags">
+                        {% for area in organizacion.areas_trabajo %}
+                            <span class="tag">{{ area.nombre }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Miembros</h3>
+                    <div class="members-list">
+                        {% for usuario in organizacion.usuarios %}
+                            <div class="member-item">
+                                <span class="member-name">{{ usuario.nombre }} {{ usuario.apellido }}</span>
+                                <span class="member-email">{{ usuario.correo_electronico }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>Eventos</h3>
+                        <a href="{{ url_for('organizer.create_event') }}" class="btn btn-sm">
+                            <i class="fas fa-plus"></i> Nuevo Evento
+                        </a>
+                    </div>
+                    {% if organizacion.eventos %}
+                        <div class="events-list">
+                            {% for evento in organizacion.eventos %}
+                                <div class="event-item">
+                                    <div class="event-info">
+                                        <h4>{{ evento.nombre }}</h4>
+                                        <div class="event-meta">
+                                            <span><i class="fas fa-calendar"></i> {{ evento.fecha.strftime('%d/%m/%Y') }}</span>
+                                            <span><i class="fas fa-map-marker-alt"></i> {{ evento.ubicacion }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="event-stats">
+                                        <span><i class="fas fa-users"></i> {{ evento.solicitudes.count() }} solicitudes</span>
+                                        <span><i class="fas fa-check"></i> {{ evento.solicitudes.filter_by(estado='aprobado').count() }} aprobados</span>
+                                    </div>
+                                    <a href="{{ url_for('organizer.event_detail', event_id=evento.id) }}" class="btn btn-sm">Ver Detalles</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-message">No hay eventos registrados para esta organización.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %} 

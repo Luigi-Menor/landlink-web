@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}LandLink - Conectando Voluntarios con Proyectos Sociales{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1>Conectando Voluntarios con Proyectos Sociales</h1>
+                <p class="lead">Únete a nuestra comunidad y marca la diferencia en tu comunidad. Encuentra proyectos que coincidan con tus intereses y habilidades.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('auth.proyectos') }}" class="btn btn-primary btn-lg">Explorar Proyectos</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Unirse como Voluntario</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="vision-card">
+                    <h2>Nuestra Visión</h2>
+                    <p>Creemos en el poder de la acción colectiva para crear un cambio positivo en nuestras comunidades. A través de LandLink, facilitamos la conexión entre organizaciones y voluntarios comprometidos con el desarrollo social.</p>
+                    <div class="vision-values">
+                        <div class="value-item">
+                            <i class="fas fa-heart"></i>
+                            <h4>Compromiso Social</h4>
+                            <p>Promovemos la participación activa en proyectos que benefician a la comunidad.</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-hands-helping"></i>
+                            <h4>Colaboración</h4>
+                            <p>Fomentamos el trabajo en equipo y la cooperación entre diferentes actores sociales.</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Impacto Medible</h4>
+                            <p>Nos enfocamos en generar resultados tangibles y medibles en cada proyecto.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>{{ stats.active_projects }}</h3>
+                    <p>Proyectos Activos</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <h3>{{ stats.total_volunteers }}</h3>
+                    <p>Voluntarios Registrados</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-building"></i>
+                    <h3>{{ stats.total_organizations }}</h3>
+                    <p>Organizaciones</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-clock"></i>
+                    <h3>{{ stats.total_hours }}</h3>
+                    <p>Horas de Voluntariado</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">¿Por qué elegir LandLink?</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Encuentra tu Proyecto Ideal</h3>
+                    <p>Explora proyectos que coincidan con tus intereses y habilidades. Filtra por área, ubicación y fecha.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Gestiona tu Participación</h3>
+                    <p>Registra tus horas, sigue tu progreso y mantén un historial de tu impacto social.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Reconoce tu Contribución</h3>
+                    <p>Obtén certificados y reconocimientos por tu participación en proyectos sociales.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+    <div class="container">
+        <h2 class="section-title">¿Cómo Funciona?</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Regístrate</h3>
+                    <p>Crea tu cuenta y completa tu perfil con tus intereses y habilidades.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Explora</h3>
+                    <p>Busca proyectos que coincidan con tus intereses y ubicación.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Participa</h3>
+                    <p>Únete a los proyectos y contribuye con tu tiempo y habilidades.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Impacta</h3>
+                    <p>Sigue tu progreso y ve el impacto de tu contribución en la comunidad.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="featured-projects-section">
+    <div class="container">
+        <h2 class="section-title">Proyectos Destacados</h2>
+        <div class="row">
+            {% for evento in eventos_destacados %}
+            <div class="col-md-4">
+                <div class="project-card">
+                    <div class="project-image">
+                        {% if evento.imagen %}
+                        <img src="{{ url_for('static', filename=evento.imagen) }}" alt="{{ evento.nombre }}">
+                        {% else %}
+                        <img src="{{ url_for('static', filename='images/default-project.jpg') }}" alt="Imagen por defecto">
+                        {% endif %}
+                    </div>
+                    <div class="project-content">
+                        <h3>{{ evento.nombre }}</h3>
+                        <p class="project-date">{{ evento.fecha.strftime('%d/%m/%Y') }}</p>
+                        <p class="project-description">{{ evento.descripcion[:100] }}...</p>
+                        <a href="{{ url_for('auth.detalle_proyecto', project_id=evento.id) }}" class="btn btn-outline-primary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2>¿Listo para marcar la diferencia?</h2>
+        <p>Únete a nuestra comunidad de voluntarios y comienza a crear un impacto positivo en tu comunidad.</p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Regístrate Ahora</a>
+            <a href="{{ url_for('auth.proyectos') }}" class="btn btn-outline-light btn-lg">Explorar Proyectos</a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h3>Mantente Informado</h3>
+                <p>Suscríbete a nuestro boletín para recibir actualizaciones sobre nuevos proyectos y oportunidades.</p>
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Tu correo electrónico">
+                        <button type="submit" class="btn btn-primary">Suscribirse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}

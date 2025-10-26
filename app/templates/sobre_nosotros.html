@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Sobre Nosotros - LandLink{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Sobre Nosotros</h1>
+        <p>Conoce más sobre LandLink y nuestra misión</p>
+    </div>
+</section>
+
+<section class="about-mission">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Nuestra Misión</h2>
+                <p>En LandLink, nuestra misión es fortalecer el tejido social urbano facilitando la conexión entre organizadores de proyectos comunitarios y voluntarios comprometidos en Bogotá.</p>
+                <p>Creemos en el poder de la acción colectiva para transformar entornos urbanos, fomentando la participación ciudadana en iniciativas de impacto social que generen cambios positivos y sostenibles.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-vision">
+    <div class="container">
+        <div class="about-content reverse">
+            <div class="about-text">
+                <h2>Nuestra Visión</h2>
+                <p>Aspiramos a construir una ciudad más participativa, solidaria y resiliente, donde cada persona tenga la oportunidad de contribuir activamente al bienestar de su comunidad.</p>
+                <p>Visualizamos un Bogotá donde los proyectos sociales cuentan con el apoyo ciudadano necesario para prosperar, y donde la tecnología impulsa la colaboración entre actores comunitarios, como base para escalar a otras regiones del país en el futuro.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-values">
+    <div class="container">
+        <h2 class="section-title">Nuestros Valores</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">🤝</div>
+                <h3>Colaboración</h3>
+                <p>Creemos en el poder de unir esfuerzos para lograr objetivos comunes.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌱</div>
+                <h3>Sostenibilidad</h3>
+                <p>Promovemos acciones que generen impacto positivo a largo plazo.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🔄</div>
+                <h3>Transparencia</h3>
+                <p>Fomentamos la claridad en todas nuestras operaciones y relaciones.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌍</div>
+                <h3>Inclusión</h3>
+                <p>Valoramos la diversidad y trabajamos para que todos tengan oportunidad de participar.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-team">
+    <div class="container">
+        <h2 class="section-title">Nuestro Equipo</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <h3>Sebastian Quintero Herrera</h3>
+                <p class="member-role">Fundador</p>
+                <p class="member-bio">Con más de 2 años de experiencia en el sector social, Sebastian fundó LandLink con la visión de transformar la manera en que las comunidades colaboran.</p>
+            </div>
+            <div class="team-member">
+                <h3>Luigi Fernando Cordoba Palacios</h3>
+                <p class="member-role">Director de Tecnología</p>
+                <p class="member-bio">Ingeniero de Sistemas con pasión por aplicar la tecnología para resolver problemas sociales.</p>
+            </div>
+            <div class="team-member">
+                <h3>Yeison David Diaz Navarrete</h3>
+                <p class="member-role">Coordinador de Proyectos</p>
+                <p class="member-bio">Especialista en gestión de proyectos comunitarios con enfoque en desarrollo sostenible.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <h2>¿Quieres formar parte de nuestra comunidad?</h2>
+        <p>Únete a LandLink y comienza a contribuir a proyectos que transforman vidas.</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Registrarse Ahora</a>
+    </div>
+</section>
+{% endblock %}

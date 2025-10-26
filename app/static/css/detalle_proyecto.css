@@ -1,0 +1,121 @@
+/* Estilos para la página de detalle del proyecto */
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.project-detail-card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Efectos hover */
+.related-project-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.related-project-card:hover {
+    transform: translateX(5px);
+}
+
+/* Estilos para el modal */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Estilos para los botones */
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilos para las alertas */
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+
+/* Estilos para las imágenes */
+.project-image img {
+    transition: transform 0.3s ease-in-out;
+}
+
+.project-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Estilos para los iconos */
+.detail-item i {
+    transition: transform 0.2s ease-in-out;
+}
+
+.detail-item:hover i {
+    transform: scale(1.2);
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+    .project-header {
+        padding: 1.5rem;
+    }
+    
+    .project-content {
+        padding: 1.5rem;
+    }
+    
+    .related-projects {
+        margin-top: 2rem;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+}
+
+/* Estilos para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .project-image {
+        height: 300px;
+    }
+    
+    .project-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Estilos para pantallas grandes */
+@media (min-width: 1025px) {
+    .container {
+        max-width: 1200px;
+    }
+    
+    .project-detail-card {
+        margin-bottom: 2rem;
+    }
+} 

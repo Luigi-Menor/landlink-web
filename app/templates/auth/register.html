@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - LandLink{% endblock %}
+
+{% block content %}
+<section class="auth-container">
+    <h1>Registro de Usuario</h1>
+    
+    <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" value="{{ data.nombre if data else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido" value="{{ data.apellido if data else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="correo_electronico">Correo Electrónico</label>
+            <input type="email" id="correo_electronico" name="correo_electronico" value="{{ data.correo_electronico if data else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" value="{{ data.telefono if data else '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ data.fecha_nacimiento if data else '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero">
+                <option value="">Seleccionar</option>
+                <option value="masculino" {% if data and data.genero == 'masculino' %}selected{% endif %}>Masculino</option>
+                <option value="femenino" {% if data and data.genero == 'femenino' %}selected{% endif %}>Femenino</option>
+                <option value="otro" {% if data and data.genero == 'otro' %}selected{% endif %}>Otro</option>
+                <option value="prefiero_no_decir" {% if data and data.genero == 'prefiero_no_decir' %}selected{% endif %}>Prefiero no decir</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" name="contrasena" required>
+            <small>La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="confirmar_contrasena">Confirmar Contraseña</label>
+            <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" required>
+        </div>
+        
+        <div class="form-group checkbox">
+            <input type="checkbox" id="terminos" name="terminos" required>
+            <label for="terminos">Acepto los <a href="#" target="_blank">términos y condiciones</a></label>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+        </div>
+        
+        <div class="form-links">
+            <a href="{{ url_for('auth.login') }}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

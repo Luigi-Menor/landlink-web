@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}LandLink - Conectando Voluntarios con Causas{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Conectando Voluntarios con Causas Importantes</h1>
+        <p>Únete a nuestra comunidad y marca la diferencia en tu localidad</p>
+        {% if not current_user.is_authenticated %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Regístrate</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Inicia Sesión</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<section class="upcoming-events">
+    <div class="section-header">
+        <h2>Próximos Eventos</h2>
+        <a href="{{ url_for('volunteer.events') }}" class="view-all">Ver todos</a>
+    </div>
+    
+    <div class="events-grid">
+        {% for evento in eventos %}
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="day">{{ evento.fecha.strftime('%d') }}</span>
+                    <span class="month">{{ evento.fecha.strftime('%b') }}</span>
+                </div>
+                <div class="event-details">
+                    <h3>{{ evento.nombre }}</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> {{ evento.ubicacion }}</p>
+                    <p class="organization"><i class="fas fa-building"></i> {{ evento.organizacion.nombre }}</p>
+                    <a href="{{ url_for('volunteer.event_detail', event_id=evento.id) }}" class="btn btn-outline">Ver Detalles</a>
+                </div>
+            </div>
+        {% else %}
+            <p class="no-events">No hay eventos próximos programados.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="organizations">
+    <div class="section-header">
+        <h2>Organizaciones Destacadas</h2>
+    </div>
+    
+    <div class="organizations-grid">
+        {% for org in organizaciones %}
+            <div class="org-card">
+                <h3>{{ org.nombre }}</h3>
+                <p class="org-type">{{ org.tipo_organizacion.nombre }}</p>
+                <p class="org-location"><i class="fas fa-map-marker-alt"></i> {{ org.localidad }}</p>
+                <div class="org-areas">
+                    {% for area in org.areas_trabajo %}
+                        <span class="area-tag">{{ area.nombre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <p class="no-orgs">No hay organizaciones registradas.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/img/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-buttons {
+    margin-top: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.events-grid, .organizations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0 2rem;
+}
+
+.event-card, .org-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.event-date {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.event-date .day {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4a90e2;
+}
+
+.event-date .month {
+    text-transform: uppercase;
+    color: #666;
+}
+
+.event-details h3, .org-card h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.location, .organization {
+    color: #666;
+    margin: 0.5rem 0;
+}
+
+.area-tag {
+    display: inline-block;
+    background: #e9ecef;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.875rem;
+    margin: 0.25rem;
+    color: #495057;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 0.5rem;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    color: white;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+.btn-outline {
+    border: 1px solid #4a90e2;
+    color: #4a90e2;
+}
+
+.view-all {
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+section {
+    padding: 4rem 0;
+}
+
+.no-events, .no-orgs {
+    text-align: center;
+    color: #666;
+    grid-column: 1 / -1;
+}
+</style>
+{% endblock %} 

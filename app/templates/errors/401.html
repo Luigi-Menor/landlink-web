@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}No Autorizado - LandLink{% endblock %}
+
+{% block content %}
+<section class="error-container">
+    <h1>401</h1>
+    <h2>No Autorizado</h2>
+    <p>Lo sentimos, no tienes autorización para acceder a esta página.</p>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Iniciar Sesión</a>
+</section>
+{% endblock %}

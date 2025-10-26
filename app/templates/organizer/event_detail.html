@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}{{ evento.nombre }} - LandLink{% endblock %}
+
+{% block content %}
+<div class="organizer-layout">
+    <aside class="organizer-sidebar">
+        <div class="sidebar-header">
+            <h2>Organizador</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('organizer.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('organizer.events') }}" class="active"><i class="fas fa-calendar-alt"></i> Mis Eventos</a></li>
+                <li><a href="{{ url_for('organizer.organizations') }}"><i class="fas fa-building"></i> Organizaciones</a></li>
+                <li><a href="{{ url_for('organizer.create_event') }}"><i class="fas fa-plus-circle"></i> Crear Evento</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="organizer-content">
+        <section class="event-detail">
+            <div class="section-header">
+                <h1>{{ evento.nombre }}</h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('organizer.events') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    <a href="{{ url_for('organizer.edit_event', event_id=evento.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <h3>Información General</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Fecha:</span>
+                            <span class="value">{{ evento.fecha.strftime('%d/%m/%Y') }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Ubicación:</span>
+                            <span class="value">{{ evento.ubicacion }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Organización:</span>
+                            <span class="value">{{ evento.organizacion.nombre }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Estado:</span>
+                            <span class="value status-{{ evento.estado }}">{{ evento.estado|title }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Descripción</h3>
+                    <p class="description">{{ evento.descripcion }}</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Requisitos</h3>
+                    <p class="requirements">{{ evento.requisitos or 'No se han especificado requisitos' }}</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Áreas de Intervención</h3>
+                    <div class="tags">
+                        {% for area in evento.areas_intervencion %}
+                            <span class="tag">{{ area.nombre }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>Solicitudes Pendientes</h3>
+                    </div>
+                    {% if solicitudes_pendientes %}
+                        <div class="solicitudes-list">
+                            {% for solicitud in solicitudes_pendientes %}
+                                <div class="solicitud-item">
+                                    <div class="solicitud-info">
+                                        <h4>{{ solicitud.usuario.nombre }} {{ solicitud.usuario.apellido }}</h4>
+                                        <span class="solicitud-email">{{ solicitud.usuario.correo_electronico }}</span>
+                                        <p class="solicitud-mensaje">{{ solicitud.mensaje }}</p>
+                                    </div>
+                                    <div class="solicitud-actions">
+                                        <form method="POST" action="{{ url_for('organizer.aprobar_solicitud', event_id=evento.id, solicitud_id=solicitud.id) }}" class="inline-form">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i> Aprobar
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ url_for('organizer.rechazar_solicitud', event_id=evento.id, solicitud_id=solicitud.id) }}" class="inline-form">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i> Rechazar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-message">No hay solicitudes pendientes para este evento.</p>
+                    {% endif %}
+                </div>
+
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>Voluntarios Aprobados</h3>
+                    </div>
+                    {% set voluntarios_aprobados = evento.solicitudes.filter_by(estado='aprobado').all() %}
+                    {% if voluntarios_aprobados %}
+                        <div class="voluntarios-list">
+                            {% for solicitud in voluntarios_aprobados %}
+                                <div class="voluntario-item">
+                                    <span class="voluntario-name">{{ solicitud.usuario.nombre }} {{ solicitud.usuario.apellido }}</span>
+                                    <span class="voluntario-email">{{ solicitud.usuario.correo_electronico }}</span>
+                                    <span class="voluntario-fecha">Aprobado: {{ solicitud.decidido_en.strftime('%d/%m/%Y') if solicitud.decidido_en else 'Fecha no disponible' }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-message">No hay voluntarios aprobados para este evento.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

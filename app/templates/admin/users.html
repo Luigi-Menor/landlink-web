@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios - LandLink{% endblock %}
+
+{% block content %}
+<section class="admin-container">
+    <h1>Gestión de Usuarios</h1>
+    
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
+    
+    <div class="filter-container">
+        <form method="GET" action="{{ url_for('admin.users') }}" class="filter-form">
+            <div class="form-group">
+                <label for="search">
+                    <i class="fas fa-search"></i> Buscar
+                </label>
+                <input type="text" 
+                       id="search" 
+                       name="search" 
+                       value="{{ search }}"
+                       placeholder="Nombre, apellido o correo...">
+            </div>
+            
+            <div class="form-group">
+                <label for="role">
+                    <i class="fas fa-user-tag"></i> Rol
+                </label>
+                <select id="role" name="role">
+                    <option value="">Todos los roles</option>
+                    {% for role in roles %}
+                        <option value="{{ role.id }}" 
+                                {% if selected_role == role.id %}selected{% endif %}>
+                            {{ role.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="status">
+                    <i class="fas fa-toggle-on"></i> Estado
+                </label>
+                <select id="status" name="status">
+                    <option value="">Todos los estados</option>
+                    <option value="activo" {% if selected_status == 'activo' %}selected{% endif %}>Activo</option>
+                    <option value="inactivo" {% if selected_status == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                    <option value="bloqueado" {% if selected_status == 'bloqueado' %}selected{% endif %}>Bloqueado</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    {% if users %}
+        <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.get_full_name() }}</td>
+                        <td>{{ user.correo_electronico }}</td>
+                        <td>{{ user.telefono or 'N/A' }}</td>
+                        <td>{{ user.role.nombre }}</td>
+                        <td>
+                            <span class="status-badge {{ user.estado }}">
+                                {{ user.estado }}
+                            </span>
+                        </td>
+                        <td>
+                                <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" 
+                                   class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        
+        {% if pagination.pages > 1 %}
+        <div class="pagination">
+                <div class="pagination-info">
+                    Mostrando {{ pagination.items|length }} de {{ pagination.total }} usuarios
+                </div>
+                <div class="pagination-links">
+                    {% if pagination.has_prev %}
+                        <a href="{{ url_for('admin.users', page=pagination.prev_num, **request.args) }}" 
+                           class="btn btn-outline">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+            {% endif %}
+            
+                    {% for page_num in range(1, pagination.pages + 1) %}
+                        {% if page_num == pagination.page %}
+                            <span class="btn btn-primary">{{ page_num }}</span>
+                        {% else %}
+                            <a href="{{ url_for('admin.users', page=page_num, **request.args) }}" 
+                               class="btn btn-outline">{{ page_num }}</a>
+            {% endif %}
+                    {% endfor %}
+                    
+                    {% if pagination.has_next %}
+                        <a href="{{ url_for('admin.users', page=pagination.next_num, **request.args) }}" 
+                           class="btn btn-outline">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+            {% endif %}
+        </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users-slash"></i>
+            <p>No se encontraron usuarios con los filtros seleccionados.</p>
+            <a href="{{ url_for('admin.users') }}" class="btn btn-primary">
+                <i class="fas fa-redo"></i> Limpiar filtros
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración - LandLink{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>Administración</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="{{ url_for('admin.dashboard') }}" class="active">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.users') }}">
+                        <i class="fas fa-users"></i>
+                        Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.organizations') }}">
+                        <i class="fas fa-building"></i>
+                        Organizaciones
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.events') }}">
+                        <i class="fas fa-calendar-alt"></i>
+                        Eventos
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.data_structures') }}">
+                        <i class="fas fa-database"></i>
+                        Estructuras de Datos
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.settings') }}">
+                        <i class="fas fa-cog"></i>
+                        Configuración
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="admin-content">
+<section class="admin-dashboard">
+    <h1>Panel de Administración</h1>
+    
+    <div class="stats-grid">
+        <article class="stat-card">
+                    <h3>Usuarios Totales</h3>
+            <p class="stat-number">{{ total_usuarios }}</p>
+                    <p>Miembros registrados en la plataforma</p>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-primary btn-sm">Gestionar Usuarios</a>
+        </article>
+        
+        <article class="stat-card">
+            <h3>Organizaciones</h3>
+            <p class="stat-number">{{ total_organizaciones }}</p>
+                    <p>Organizaciones activas en la plataforma</p>
+                    <a href="{{ url_for('admin.organizations') }}" class="btn btn-primary btn-sm">Gestionar Organizaciones</a>
+        </article>
+        
+        <article class="stat-card">
+            <h3>Eventos</h3>
+            <p class="stat-number">{{ total_eventos }}</p>
+                    <p>Eventos creados en la plataforma</p>
+                    <a href="{{ url_for('admin.events') }}" class="btn btn-primary btn-sm">Gestionar Eventos</a>
+        </article>
+    </div>
+    
+    <div class="admin-sections">
+        <section class="admin-section">
+            <h2>Usuarios Recientes</h2>
+            
+            {% if usuarios_recientes %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios_recientes %}
+                            <tr>
+                                <td>{{ usuario.get_full_name() }}</td>
+                                <td>{{ usuario.correo_electronico }}</td>
+                                <td>{{ usuario.role.nombre }}</td>
+                                <td>
+                                    <span class="status-badge {{ usuario.estado }}">
+                                        {{ usuario.estado }}
+                                    </span>
+                                </td>
+                                <td>
+                                            <a href="{{ url_for('admin.edit_user', user_id=usuario.id) }}" class="btn btn-secondary btn-sm">Editar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                        <div class="admin-actions">
+                <a href="{{ url_for('admin.users') }}" class="btn btn-primary">Ver Todos los Usuarios</a>
+                        </div>
+            {% else %}
+                        <p class="empty-message">No hay usuarios registrados recientemente.</p>
+            {% endif %}
+        </section>
+            </div>
+        
+            <div class="admin-sections">
+        <section class="admin-section">
+            <h2>Eventos Recientes</h2>
+            
+            {% if eventos_recientes %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                            <th>Organización</th>
+                                    <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for evento in eventos_recientes %}
+                            <tr>
+                                <td>{{ evento.nombre }}</td>
+                                <td>{{ evento.fecha.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ evento.organizacion.nombre }}</td>
+                                        <td>
+                                            <span class="status-badge {{ evento.estado if evento.estado else 'activo' }}">
+                                                {{ evento.estado if evento.estado else 'Activo' }}
+                                            </span>
+                                        </td>
+                                <td>
+                                            <a href="{{ url_for('admin.edit_event', event_id=evento.id) }}" class="btn btn-secondary btn-sm">Editar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                        <div class="admin-actions">
+                <a href="{{ url_for('admin.events') }}" class="btn btn-primary">Ver Todos los Eventos</a>
+                        </div>
+
+                        <div class="event-logs">
+                            <h3>Logs de Actividad</h3>
+                            {% for log in logs %}
+                                <div class="log-entry">
+                                    <span class="log-time">{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
+                                    <span class="log-type {{ log.type }}">{{ log.type }}</span>
+                                    <span class="log-message">{{ log.message }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+            {% else %}
+                        <p class="empty-message">No hay eventos registrados recientemente.</p>
+            {% endif %}
+        </section>
+    </div>
+</section>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}

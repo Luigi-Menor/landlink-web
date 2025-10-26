@@ -1,0 +1,183 @@
+{% extends "admin/base.html" %}
+
+{% block extra_css %}
+<style>
+    .card {
+        margin-bottom: 2rem;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        padding: 1rem;
+    }
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.4em 0.8em;
+    }
+    .alert-info {
+        background-color: #e8f4ff;
+        border: none;
+        color: #004085;
+        margin-bottom: 1rem;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .table th {
+        background-color: #f8f9fc;
+    }
+    .table td, .table th {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+    .badge-success {
+        background-color: #1cc88a;
+    }
+    .badge-secondary {
+        background-color: #858796;
+    }
+    .badge-info {
+        background-color: #36b9cc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-database me-2"></i>
+        Estructuras de Datos
+    </h1>
+
+    <!-- Stack -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-layer-group me-2"></i>
+                Pila (Stack) - LIFO
+                <span class="badge badge-info float-end">
+                    {{ stack_info.current_size }}/{{ stack_info.max_size }} elementos
+                </span>
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Los elementos se muestran desde el tope (último agregado) hasta la base.
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in stack_items %}
+                        <tr>
+                            <td>{{ loop.index0 }}</td>
+                            <td>{{ item }}</td>
+                            <td>
+                                <span class="badge {% if loop.first %}badge-success{% else %}badge-secondary{% endif %}">
+                                    {% if loop.first %}Tope{% else %}En pila{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Queue -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-stream me-2"></i>
+                Cola (Queue) - FIFO
+                <span class="badge badge-info float-end">
+                    {{ queue_info.size }} elementos
+                </span>
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Los elementos se muestran en orden de entrada, el primero será el próximo en salir.
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in queue_items %}
+                        <tr>
+                            <td>{{ loop.index0 }}</td>
+                            <td>{{ item }}</td>
+                            <td>
+                                <span class="badge {% if loop.first %}badge-success{% else %}badge-secondary{% endif %}">
+                                    {% if loop.first %}Próximo{% else %}En espera{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Array -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-table me-2"></i>
+                Arreglo Dinámico
+                <span class="badge badge-info float-end">
+                    Utilización: {{ array_info.utilization }}
+                </span>
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Visualización del arreglo con su capacidad total y espacios utilizados.
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Índice</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in array_items %}
+                        <tr>
+                            <td>{{ loop.index0 }}</td>
+                            <td>{{ item.value if item.value else '---' }}</td>
+                            <td>
+                                <span class="badge {% if item.status == 'Ocupado' %}badge-success{% else %}badge-secondary{% endif %}">
+                                    {{ item.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

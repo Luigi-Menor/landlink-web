@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LandLink{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <a href="{{ url_for('auth.index') }}">LandLink</a>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="{{ url_for('auth.index') }}">Inicio</a></li>
+                    <li><a href="{{ url_for('auth.proyectos') }}">Proyectos</a></li>
+                    <li><a href="{{ url_for('auth.sobre_nosotros') }}">Sobre Nosotros</a></li>
+                    <li><a href="{{ url_for('auth.contacto') }}">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="nav-auth">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin() %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Panel de Administración</a>
+                    {% elif current_user.is_organizer() %}
+                        <a href="{{ url_for('organizer.dashboard') }}" class="btn btn-secondary">Panel de Organizador</a>
+                    {% else %}
+                        <a href="{{ url_for('volunteer.dashboard') }}" class="btn btn-secondary">Panel de Voluntario</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Cerrar Sesión</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline">Iniciar Sesión</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Registrarse</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <section class="flash-messages">
+                    {% for category, message in messages %}
+                        <article class="flash-message {{ category }}">
+                            <span>{{ message }}</span>
+                            <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+                        </article>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>LandLink</h2>
+                <p>Conectando Comunidades</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Enlaces</h3>
+                    <ul>
+                        <li><a href="{{ url_for('auth.index') }}">Inicio</a></li>
+                        <li><a href="{{ url_for('auth.proyectos') }}">Proyectos</a></li>
+                        <li><a href="{{ url_for('auth.sobre_nosotros') }}">Sobre Nosotros</a></li>
+                        <li><a href="{{ url_for('auth.contacto') }}">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {{ now.year }} LandLink - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

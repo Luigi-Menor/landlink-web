@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Error del Servidor - LandLink{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content">
+        <h1 class="error-title">500</h1>
+        <h2 class="error-subtitle">Error del Servidor</h2>
+        <p class="error-message">Lo sentimos, ha ocurrido un error inesperado.</p>
+        <div class="error-actions">
+    <a href="{{ url_for('auth.index') }}" class="btn btn-primary">Volver al Inicio</a>
+            <button onclick="window.history.back()" class="btn btn-secondary">Volver Atrás</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

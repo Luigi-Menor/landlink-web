@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Organizaciones - LandLink{% endblock %}
+
+{% block content %}
+<section class="admin-container">
+    <h1>Gestión de Organizaciones</h1>
+    
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Volver al Dashboard</a>
+    </div>
+    
+    <div class="filter-container">
+        <form method="GET" action="{{ url_for('admin.organizations') }}" class="filter-form">
+            <div class="form-group">
+                <label for="search">Buscar</label>
+                <input type="text" id="search" name="search" value="{{ request.args.get('search', '') }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo">
+                    <option value="">Todos</option>
+                    {% for tipo in tipos %}
+                        <option value="{{ tipo.id }}" {% if request.args.get('tipo') == tipo.id|string %}selected{% endif %}>{{ tipo.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    </div>
+    
+    {% if organizations.items %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Tipo</th>
+                    <th>Usuarios</th>
+                    <th>Eventos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for org in organizations.items %}
+                    <tr>
+                        <td>{{ org.id }}</td>
+                        <td>{{ org.nombre }}</td>
+                        <td>{{ org.direccion or 'N/A' }}</td>
+                        <td>{{ org.tipo.nombre if org.tipo else 'N/A' }}</td>
+                        <td>{{ org.usuarios|list|length }}</td>
+                        <td>{{ org.eventos|list|length }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm">Ver</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="pagination">
+            {% if organizations.has_prev %}
+                <a href="{{ url_for('admin.organizations', page=organizations.prev_num, **request.args) }}" class="btn btn-sm">&laquo; Anterior</a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                Página {{ organizations.page }} de {{ organizations.pages }}
+            </span>
+            
+            {% if organizations.has_next %}
+                <a href="{{ url_for('admin.organizations', page=organizations.next_num, **request.args) }}" class="btn btn-sm">Siguiente &raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No hay organizaciones para mostrar.</p>
+    {% endif %}
+</section>
+{% endblock %}

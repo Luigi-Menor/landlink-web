@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Explorar Eventos - LandLink{% endblock %}
+
+{% block content %}
+<section class="volunteer-events">
+    <h1>Explorar Eventos</h1>
+    
+    <div class="events-actions">
+        <a href="{{ url_for('volunteer.dashboard') }}" class="btn btn-secondary">Volver al Dashboard</a>
+    </div>
+    
+    <div class="filter-container">
+        <form method="GET" action="{{ url_for('volunteer.events') }}" class="filter-form">
+            <div class="form-group">
+                <label for="search">Buscar</label>
+                <input type="text" id="search" name="search" value="{{ request.args.get('search', '') }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha_desde">Desde</label>
+                <input type="date" id="fecha_desde" name="fecha_desde" value="{{ request.args.get('fecha_desde', '') }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha_hasta">Hasta</label>
+                <input type="date" id="fecha_hasta" name="fecha_hasta" value="{{ request.args.get('fecha_hasta', '') }}">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    </div>
+    
+    {% if eventos.items %}
+        <div class="events-grid">
+            {% for evento in eventos.items %}
+                <article class="event-card">
+                    <div class="event-header">
+                        <h3>{{ evento.nombre }}</h3>
+                        <span class="event-date">{{ evento.fecha.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    
+                    <div class="event-body">
+                        <p>{{ evento.descripcion }}</p>
+                        <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+                        <p><strong>Organización:</strong> {{ evento.organizacion.nombre }}</p>
+                        
+                        {% if evento.areas.count() > 0 %}
+                            <div class="event-tags">
+                                {% for area in evento.areas %}
+                                    <span class="tag">{{ area.nombre }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="event-actions">
+                        <a href="{{ url_for('volunteer.event_detail', event_id=evento.id) }}" class="btn btn-primary">Ver Detalles</a>
+                        
+                        {% if evento.id in eventos_inscritos %}
+                            <span class="status-badge aprobado">Inscrito</span>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('volunteer.inscribirse_evento', event_id=evento.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-secondary">Inscribirse</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        
+        <div class="pagination">
+            {% if eventos.has_prev %}
+                <a href="{{ url_for('volunteer.events', page=eventos.prev_num, **request.args) }}" class="btn btn-sm">&laquo; Anterior</a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                Página {{ eventos.page }} de {{ eventos.pages }}
+            </span>
+            
+            {% if eventos.has_next %}
+                <a href="{{ url_for('volunteer.events', page=eventos.next_num, **request.args) }}" class="btn btn-sm">Siguiente &raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No hay eventos disponibles que coincidan con tu búsqueda.</p>
+            <a href="{{ url_for('volunteer.events') }}" class="btn btn-primary">Ver Todos los Eventos</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

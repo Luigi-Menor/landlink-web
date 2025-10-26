@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Eventos - LandLink{% endblock %}
+
+{% block content %}
+<section class="organizer-events">
+    <h1>Mis Eventos</h1>
+    
+    <div class="events-actions">
+        <a href="{{ url_for('organizer.dashboard') }}" class="btn btn-secondary">Volver al Dashboard</a>
+        <a href="{{ url_for('organizer.create_event') }}" class="btn btn-primary">Crear Nuevo Evento</a>
+    </div>
+    
+    {% if eventos %}
+        <div class="events-grid">
+            {% for evento in eventos %}
+                <article class="event-card">
+                    <div class="event-header">
+                        <h3>{{ evento.nombre }}</h3>
+                        <span class="event-date">{{ evento.fecha.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    
+                    <div class="event-body">
+                        <p>{{ evento.descripcion }}</p>
+                        <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+                        <p><strong>Organización:</strong> {{ evento.organizacion.nombre }}</p>
+                        
+                        <div class="event-stats">
+                            <div class="event-stat">
+                                <span class="stat-label">Solicitudes</span>
+                                <span class="stat-value">{{ evento.solicitudes.count() }}</span>
+                            </div>
+                            <div class="event-stat">
+                                <span class="stat-label">Aprobados</span>
+                                <span class="stat-value">{{ evento.solicitudes.filter_by(estado='aprobado').count() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-actions">
+                        <a href="{{ url_for('organizer.event_detail', event_id=evento.id) }}" class="btn btn-primary">Ver Detalles</a>
+                        <a href="{{ url_for('organizer.edit_event', event_id=evento.id) }}" class="btn btn-secondary">Editar</a>
+                        <form method="POST" action="{{ url_for('organizer.delete_event', event_id=evento.id) }}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No has creado ningún evento todavía.</p>
+            <a href="{{ url_for('organizer.create_event') }}" class="btn btn-primary">Crear tu primer evento</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

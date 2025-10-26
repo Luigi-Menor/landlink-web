@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso Prohibido - LandLink{% endblock %}
+
+{% block content %}
+<section class="error-container">
+    <h1>403</h1>
+    <h2>Acceso Prohibido</h2>
+    <p>Lo sentimos, no tienes permiso para acceder a esta página.</p>
+    <a href="{{ url_for('auth.index') }}" class="btn btn-primary">Volver al Inicio</a>
+</section>
+{% endblock %}

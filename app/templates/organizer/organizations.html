@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Organizaciones - LandLink{% endblock %}
+
+{% block content %}
+<div class="organizer-layout">
+    <aside class="organizer-sidebar">
+        <div class="sidebar-header">
+            <h2>Organizador</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('organizer.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('organizer.events') }}"><i class="fas fa-calendar-alt"></i> Mis Eventos</a></li>
+                <li><a href="{{ url_for('organizer.organizations') }}" class="active"><i class="fas fa-building"></i> Organizaciones</a></li>
+                <li><a href="{{ url_for('organizer.create_event') }}"><i class="fas fa-plus-circle"></i> Crear Evento</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="organizer-content">
+        <section class="organizations-section">
+            <div class="section-header">
+                <h1>Mis Organizaciones</h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('organizer.create_organization') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nueva Organización
+                    </a>
+                </div>
+            </div>
+
+            {% if organizaciones %}
+            <div class="organizations-grid">
+                {% for org in organizaciones %}
+                <article class="organization-card">
+                    <div class="org-header">
+                        <h3>{{ org.nombre }}</h3>
+                        <span class="org-type">{{ org.tipo_organizacion.nombre if org.tipo_organizacion else 'Sin categoría' }}</span>
+                    </div>
+                    
+                    <div class="org-body">
+                        <div class="org-info">
+                            <p><i class="fas fa-map-marker-alt"></i> {{ org.localidad or 'Localidad no especificada' }}</p>
+                            <p><i class="fas fa-users"></i> {{ org.usuarios|list|length }} miembros</p>
+                            <p><i class="fas fa-calendar-check"></i> {{ org.eventos.all()|length }} eventos realizados</p>
+                        </div>
+                        
+                        <div class="org-description">
+                            <h4>Descripción</h4>
+                            <p>{{ org.descripcion or 'Sin descripción disponible' }}</p>
+                        </div>
+
+                        <div class="org-contact">
+                            <h4>Contacto</h4>
+                            <p><i class="fas fa-envelope"></i> {{ org.correo_electronico }}</p>
+                            <p><i class="fas fa-phone"></i> {{ org.telefono or 'No disponible' }}</p>
+                        </div>
+
+                        <div class="org-areas">
+                            <h4>Áreas de Trabajo</h4>
+                            <div class="tags">
+                                {% for area in org.areas_trabajo %}
+                                <span class="tag">{{ area.nombre }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="org-footer">
+                        <div class="org-stats">
+                            <div class="stat">
+                                {% set eventos_activos = org.eventos.all()|selectattr('fecha', '>=', now.date())|list %}
+                                <span class="stat-value">{{ eventos_activos|length }}</span>
+                                <span class="stat-label">Eventos Activos</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">{{ org.usuarios|list|length }}</span>
+                                <span class="stat-label">Voluntarios</span>
+                            </div>
+                        </div>
+                        <div class="org-actions">
+                            <a href="{{ url_for('organizer.edit_organization', org_id=org.id) }}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="{{ url_for('organizer.organization_detail', org_id=org.id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-building"></i>
+                <h3>No hay organizaciones registradas</h3>
+                <p>Comienza registrando tu primera organización para gestionar eventos y voluntarios.</p>
+                <a href="{{ url_for('organizer.create_organization') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Registrar Organización
+                </a>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock %} 

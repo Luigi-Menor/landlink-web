@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Configuración del Sistema - LandLink{% endblock %}
+
+{% block content %}
+<section class="admin-container">
+    <h1>Configuración del Sistema</h1>
+    
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Volver al Dashboard</a>
+    </div>
+    
+    <div class="settings-grid">
+        <div class="settings-card">
+            <h3>Tipos de Organización</h3>
+            <p>Gestiona los tipos de organización disponibles en el sistema.</p>
+            <a href="#" class="btn btn-primary">Gestionar</a>
+        </div>
+        
+        <div class="settings-card">
+            <h3>Áreas de Intervención</h3>
+            <p>Gestiona las áreas de intervención disponibles para los eventos.</p>
+            <a href="#" class="btn btn-primary">Gestionar</a>
+        </div>
+        
+        <div class="settings-card">
+            <h3>Roles de Evento</h3>
+            <p>Gestiona los roles que pueden tener los voluntarios en los eventos.</p>
+            <a href="#" class="btn btn-primary">Gestionar</a>
+        </div>
+        
+        <div class="settings-card">
+            <h3>Seguridad</h3>
+            <p>Configura los parámetros de seguridad del sistema.</p>
+            <a href="#" class="btn btn-primary">Gestionar</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

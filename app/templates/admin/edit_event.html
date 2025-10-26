@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Evento - LandLink{% endblock %}
+
+{% block content %}
+<section class="admin-container">
+    <h1>Editar Evento</h1>
+    
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.events') }}" class="btn btn-secondary">Volver a Eventos</a>
+    </div>
+    
+    <form method="POST" class="admin-form">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label for="nombre">Nombre del Evento</label>
+            <input type="text" id="nombre" name="nombre" value="{{ evento.nombre }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" value="{{ evento.fecha.strftime('%Y-%m-%d') }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required>{{ evento.descripcion }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="organizacion_id">Organización</label>
+            <select id="organizacion_id" name="organizacion_id" required>
+                {% for org in organizaciones %}
+                    <option value="{{ org.id }}" {% if org.id == evento.organizacion_id %}selected{% endif %}>
+                        {{ org.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <input type="text" id="ubicacion" name="ubicacion" value="{{ evento.ubicacion }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="localidad">Localidad</label>
+            <input type="text" id="localidad" name="localidad" value="{{ evento.localidad }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado" required>
+                <option value="pendiente" {% if evento.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                <option value="aprobado" {% if evento.estado == 'aprobado' %}selected{% endif %}>Aprobado</option>
+                <option value="rechazado" {% if evento.estado == 'rechazado' %}selected{% endif %}>Rechazado</option>
+                <option value="cancelado" {% if evento.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="requisitos">Requisitos</label>
+            <textarea id="requisitos" name="requisitos" rows="3">{{ evento.requisitos }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="latitud">Latitud</label>
+            <input type="number" id="latitud" name="latitud" step="any" value="{{ evento.latitud }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="longitud">Longitud</label>
+            <input type="number" id="longitud" name="longitud" step="any" value="{{ evento.longitud }}">
+        </div>
+        
+        <div class="form-group">
+            <label>Áreas de Intervención</label>
+            <div class="checkbox-group">
+                {% for area in areas %}
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="area_{{ area.id }}" name="areas" value="{{ area.id }}"
+                               {% if area in evento.areas %}checked{% endif %}>
+                        <label for="area_{{ area.id }}">{{ area.nombre }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="{{ url_for('admin.events') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.admin-form {
+    background: var(--color-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background: var(--color-background);
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+</style>
+{% endblock %} 

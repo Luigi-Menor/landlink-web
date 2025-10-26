@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Proyectos - LandLink{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Filtros -->
+    <div class="filters-section mb-4">
+        <form method="GET" action="{{ url_for('auth.proyectos') }}" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Buscar proyectos..." value="{{ filters.search or '' }}">
+            </div>
+            <div class="col-md-3">
+                <select name="area" class="form-select">
+                    <option value="">Todas las áreas</option>
+                    {% for area in areas %}
+                    <option value="{{ area.id }}" {% if filters.area == area.id %}selected{% endif %}>
+                        {{ area.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="fecha_inicio" class="form-control" value="{{ filters.fecha_inicio or '' }}" placeholder="Fecha inicio">
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="fecha_fin" class="form-control" value="{{ filters.fecha_fin or '' }}" placeholder="Fecha fin">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de Proyectos -->
+    <div class="projects-grid">
+        {% if proyectos %}
+            {% for proyecto in proyectos %}
+            <div class="project-card">
+                <div class="project-image">
+                    {% if proyecto.imagen %}
+                    <img src="{{ url_for('static', filename=proyecto.imagen) }}" alt="{{ proyecto.nombre }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/default-project.jpg') }}" alt="Imagen por defecto">
+                    {% endif %}
+                </div>
+                <div class="project-content">
+                    <h3>{{ proyecto.nombre }}</h3>
+                    <div class="project-meta">
+                        <span class="date">
+                            <i class="fas fa-calendar"></i>
+                            {{ proyecto.fecha.strftime('%d/%m/%Y') }}
+                        </span>
+                        <span class="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ proyecto.ubicacion }}
+                        </span>
+                    </div>
+                    <p class="project-description">{{ proyecto.descripcion[:150] }}...</p>
+                    <div class="project-footer">
+                        <span class="area-badge">{{ proyecto.area.nombre }}</span>
+                        <a href="{{ url_for('auth.detalle_proyecto', project_id=proyecto.id) }}" class="btn btn-outline-primary">
+                            Ver detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-projects">
+                <i class="fas fa-search fa-3x mb-3"></i>
+                <h3>No se encontraron proyectos</h3>
+                <p>Intenta con otros filtros o vuelve más tarde</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-content {
+    padding: 1.5rem;
+}
+
+.project-content h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.project-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.project-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.project-description {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.project-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.area-badge {
+    background: #e9ecef;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+.no-projects {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.filters-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-section .row {
+        margin: 0;
+    }
+    
+    .filters-section .col-md-1,
+    .filters-section .col-md-2,
+    .filters-section .col-md-3,
+    .filters-section .col-md-4 {
+        padding: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

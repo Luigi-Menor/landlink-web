@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Organización - LandLink{% endblock %}
+
+{% block content %}
+<div class="organizer-layout">
+    <aside class="organizer-sidebar">
+        <div class="sidebar-header">
+            <h2>Organizador</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('organizer.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('organizer.events') }}"><i class="fas fa-calendar-alt"></i> Mis Eventos</a></li>
+                <li><a href="{{ url_for('organizer.organizations') }}" class="active"><i class="fas fa-building"></i> Organizaciones</a></li>
+                <li><a href="{{ url_for('organizer.create_event') }}"><i class="fas fa-plus-circle"></i> Crear Evento</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="organizer-content">
+        <section class="form-section">
+            <div class="section-header">
+                <h1>Nueva Organización</h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('organizer.organizations') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('organizer.create_organization') }}" class="organization-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre de la Organización</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_id">Tipo de Organización</label>
+                    <select id="tipo_id" name="tipo_id" required>
+                        <option value="">Seleccionar tipo</option>
+                        {% for tipo in tipos %}
+                            <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="localidad">Localidad</label>
+                    <select id="localidad" name="localidad" required>
+                        <option value="">Seleccionar localidad</option>
+                        <option value="Usaquén">Usaquén</option>
+                        <option value="Chapinero">Chapinero</option>
+                        <option value="Santa Fe">Santa Fe</option>
+                        <option value="San Cristóbal">San Cristóbal</option>
+                        <option value="Usme">Usme</option>
+                        <option value="Tunjuelito">Tunjuelito</option>
+                        <option value="Bosa">Bosa</option>
+                        <option value="Kennedy">Kennedy</option>
+                        <option value="Fontibón">Fontibón</option>
+                        <option value="Engativá">Engativá</option>
+                        <option value="Suba">Suba</option>
+                        <option value="Barrios Unidos">Barrios Unidos</option>
+                        <option value="Teusaquillo">Teusaquillo</option>
+                        <option value="Los Mártires">Los Mártires</option>
+                        <option value="Antonio Nariño">Antonio Nariño</option>
+                        <option value="Puente Aranda">Puente Aranda</option>
+                        <option value="La Candelaria">La Candelaria</option>
+                        <option value="Rafael Uribe Uribe">Rafael Uribe Uribe</option>
+                        <option value="Ciudad Bolívar">Ciudad Bolívar</option>
+                        <option value="Sumapaz">Sumapaz</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="correo_electronico">Correo Electrónico</label>
+                        <input type="email" id="correo_electronico" name="correo_electronico" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" pattern="[0-9]{10}" title="Ingresa un número de teléfono válido de 10 dígitos">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Áreas de Trabajo</label>
+                    <div class="areas-grid">
+                        {% for area in areas %}
+                            <div class="area-checkbox">
+                                <input type="checkbox" id="area_{{ area.id }}" name="areas[]" value="{{ area.id }}">
+                                <label for="area_{{ area.id }}">{{ area.nombre }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Crear Organización
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+{% endblock %} 

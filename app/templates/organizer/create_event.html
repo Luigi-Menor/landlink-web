@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Evento - LandLink{% endblock %}
+
+{% block content %}
+<div class="organizer-layout">
+    <aside class="organizer-sidebar">
+        <div class="sidebar-header">
+            <h2>Organizador</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('organizer.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('organizer.events') }}" class="active"><i class="fas fa-calendar-alt"></i> Mis Eventos</a></li>
+                <li><a href="{{ url_for('organizer.organizations') }}"><i class="fas fa-building"></i> Organizaciones</a></li>
+                <li><a href="{{ url_for('organizer.create_event') }}"><i class="fas fa-plus-circle"></i> Crear Evento</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="organizer-content">
+        <section class="form-section">
+            <div class="section-header">
+                <h1>Crear Nuevo Evento</h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('organizer.events') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('organizer.create_event') }}" class="event-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre del Evento</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizacion_id">Organización</label>
+                    <select id="organizacion_id" name="organizacion_id" required>
+                        <option value="">Selecciona una organización</option>
+                        {% for org in organizaciones %}
+                            <option value="{{ org.id }}">{{ org.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha">Fecha del Evento</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ubicacion">Ubicación</label>
+                    <input type="text" id="ubicacion" name="ubicacion" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="localidad">Localidad</label>
+                    <input type="text" id="localidad" name="localidad">
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="requisitos">Requisitos</label>
+                    <textarea id="requisitos" name="requisitos" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Áreas de Intervención</label>
+                    <div class="areas-grid">
+                        {% for area in areas %}
+                            <div class="area-checkbox">
+                                <input type="checkbox" id="area_{{ area.id }}" name="areas" value="{{ area.id }}">
+                                <label for="area_{{ area.id }}">{{ area.nombre }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ubicación en el Mapa</label>
+                    <div id="map" class="map-container"></div>
+                    <input type="hidden" id="latitud" name="latitud">
+                    <input type="hidden" id="longitud" name="longitud">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Crear Evento
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+<script>
+function initMap() {
+    const map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: -34.6037, lng: -58.3816 }, // Buenos Aires por defecto
+        zoom: 13
+    });
+
+    const marker = new google.maps.Marker({
+        map: map,
+        draggable: true
+    });
+
+    map.addListener('click', (e) => {
+        marker.setPosition(e.latLng);
+        document.getElementById('latitud').value = e.latLng.lat();
+        document.getElementById('longitud').value = e.latLng.lng();
+    });
+
+    marker.addListener('dragend', (e) => {
+        document.getElementById('latitud').value = e.latLng.lat();
+        document.getElementById('longitud').value = e.latLng.lng();
+    });
+}
+</script>
+{% endblock %}
+{% endblock %}
